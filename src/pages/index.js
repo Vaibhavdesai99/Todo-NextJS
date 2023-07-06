@@ -7,8 +7,6 @@ import { MongoClient } from "mongodb";
 const HomePage = ({ initialTodos }) => {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState(initialTodos);
-
-  // Saving the Todo Status Completed Or not :
   const [completedTasks, setCompletedTasks] = useState([]);
 
   const addTask = async () => {
@@ -19,7 +17,7 @@ const HomePage = ({ initialTodos }) => {
       completed: false,
     };
 
-    // Adding the new task to the server : Todo as well as Status Completed or not: Initially we set this to false
+    // Adding the new task to the server
     await fetch("api/new-task", {
       method: "POST",
       headers: {
@@ -28,7 +26,7 @@ const HomePage = ({ initialTodos }) => {
       body: JSON.stringify(newTask),
     });
 
-    // update: Adding the new task to the client-side state
+    // Optimistic update: Adding the new task to the client-side state
     setTasks((prevTasks) => [...prevTasks, newTask]);
     setInputValue("");
   };
@@ -40,12 +38,21 @@ const HomePage = ({ initialTodos }) => {
     );
   };
 
-  const toggleTask = (taskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
+  const toggleTask = async (taskId) => {
+    // Send a PUT request to update the task's status
+    await fetch(`/api/update-task/${taskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: true }), // Update completed to true
+    });
+
+    // Update the client-side state
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId ? { ...task, completed: true } : task
     );
+    setTasks(updatedTasks.filter((task) => !task.completed)); // Filter out completed tasks
 
     setCompletedTasks((prevCompletedTasks) => {
       const taskToMove = tasks.find((task) => task.id === taskId);
