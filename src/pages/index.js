@@ -31,7 +31,13 @@ const HomePage = ({ initialTodos }) => {
     setInputValue("");
   };
 
-  const deleteTask = (taskId) => {
+  const deleteTask = async (taskId) => {
+    console.log(taskId);
+
+    await fetch(`/api/delete-task/${taskId}`, {
+      method: "DELETE",
+    });
+
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
     setCompletedTasks((prevCompletedTasks) =>
       prevCompletedTasks.filter((task) => task.id !== taskId)
