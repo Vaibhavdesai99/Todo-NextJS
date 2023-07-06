@@ -26,7 +26,7 @@ const HomePage = ({ initialTodos }) => {
       body: JSON.stringify(newTask),
     });
 
-    // Optimistic update: Adding the new task to the client-side state
+    // update: Adding the new task to the client-side state
     setTasks((prevTasks) => [...prevTasks, newTask]);
     setInputValue("");
   };
