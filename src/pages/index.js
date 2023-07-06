@@ -7,6 +7,8 @@ import { MongoClient } from "mongodb";
 const HomePage = ({ initialTodos }) => {
   const [inputValue, setInputValue] = useState("");
   const [tasks, setTasks] = useState(initialTodos);
+
+  // Saving the Todo Status Completed Or not :
   const [completedTasks, setCompletedTasks] = useState([]);
 
   const addTask = async () => {
@@ -17,7 +19,7 @@ const HomePage = ({ initialTodos }) => {
       completed: false,
     };
 
-    // Adding the new task to the server
+    // Adding the new task to the server : Todo as well as Status Completed or not: Initially we set this to false
     await fetch("api/new-task", {
       method: "POST",
       headers: {
